@@ -176,7 +176,7 @@ paths:
           description: Successful operation
         '500':
           description: Status internal server error
-          
+
   /api/teams:
     get:
       tags:
@@ -283,7 +283,7 @@ paths:
         '200':
           description: Successful operation
         '500':
-          description: Status internal server error 
+          description: Status internal server error
   /api/tracks:
     get:
       tags:
@@ -390,7 +390,7 @@ paths:
         '200':
           description: Successful operation
         '500':
-          description: Status internal server error 
+          description: Status internal server error
   /api/grandprix:
     get:
       tags:
@@ -405,7 +405,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/GrandPrix'
+                  $ref: '#/components/schemas/GrandPrixResponse'
         '500':
           description: Status internal server error
 
@@ -448,7 +448,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GrandPrix'
+                $ref: '#/components/schemas/GrandPrixResponse'
         '400':
           description: Invalid input
         '500':
@@ -497,7 +497,7 @@ paths:
         '200':
           description: Successful operation
         '500':
-          description: Status internal server error 
+          description: Status internal server error
   /api/grandprix/{id}/name:
     patch:
       tags:
@@ -802,6 +802,70 @@ paths:
           description: Successful operation
         '500':
           description: Status internal server error
+  /api/grandprix/featured:
+    get:
+      tags:
+        - featured
+      summary: Get all users featured grand prix
+      description: Returns all featured grand prix
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GrandPrixResponse'
+        '401':
+          description: Unauthorized user
+        '500':
+          description: Status internal server error
+  /api/grandprix/{id}/featured:
+      put:
+        tags:
+          - featured
+        summary: Add feature tag to grand prix
+        description: ''
+        parameters:
+          - name: id
+            in: path
+            description: ID of grand prix
+            required: true
+            schema:
+              type: integer
+              format: int64
+        responses:
+          '200':
+            description: Successful operation
+          '400':
+            description: Invalid input
+          '401':
+            description: Unauthorized user
+          '500':
+            description: Status internal server error
+      delete:
+        tags:
+          - featured
+        summary: Delete feature tag on grand prix
+        description: Delete feature tag
+        parameters:
+          - name: id
+            in: path
+            description: ID of grand prix
+            required: true
+            schema:
+              type: integer
+              format: int64
+        responses:
+          '200':
+            description: Successful operation
+          '400':
+            description: Invalid input
+          '401':
+            description: Unauthorized user
+          '500':
+            description: Status internal server error
 components:
   schemas:
     Auth:
@@ -885,6 +949,37 @@ components:
           type: integer
           format: int64
           example: 2
+    GrandPrixResponse:
+      type: object
+      properties:
+        gp_id:
+          type: integer
+          format: int64
+          example: 121
+        gp_season:
+          type: integer
+          format: int64
+          example: 2020
+        gp_name:
+          type: string
+          example: Monaco GP
+        gp_date_num:
+          type: integer
+          format: int64
+          example: 23
+        gp_month:
+          type: string
+          example: may
+        gp_place:
+          type: string
+          example: Hungary
+        gp_track_id:
+          type: integer
+          format: int64
+          example: 2
+        gp_featured:
+          type: boolean
+          example: true
     GrandPrixPatch:
       type: object
       properties:
