@@ -288,3 +288,6 @@ create trigger delete_season_standing
     before delete on raceresults
     for each row
     execute procedure DeleteTrigger();
+
+insert into users (login, password, role) VALUES ('user', 'user', 'user');
+insert into users (login, password, role) VALUES ('admin', 'admin', 'admin');

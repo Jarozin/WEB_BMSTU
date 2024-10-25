@@ -2,9 +2,10 @@ package middleware
 
 import (
 	"fmt"
-	tokenPkg "github.com/SweetBloody/bmstu_web/backend/internal/pkg/auth/token"
-	"github.com/golang-jwt/jwt"
 	"net/http"
+	tokenPkg "project/internal/pkg/auth/token"
+
+	"github.com/golang-jwt/jwt"
 )
 
 func AuthMiddleware(next http.Handler, roles ...string) http.Handler {

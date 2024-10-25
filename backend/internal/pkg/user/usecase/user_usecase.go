@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/models"
+	"project/internal/pkg/models"
 )
 
 type userUsecase struct {

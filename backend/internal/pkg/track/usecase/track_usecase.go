@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/models"
+	"project/internal/pkg/models"
 )
 
 type trackUsecase struct {
@@ -23,8 +23,8 @@ func (uc *trackUsecase) GetAll() ([]*models.Track, error) {
 	return tracks, nil
 }
 
-func (uc *trackUsecase) GetTeamById(id int) (*models.Track, error) {
-	tracks, err := uc.trackRepo.GetTeamById(id)
+func (uc *trackUsecase) GetTrackById(id int) (*models.Track, error) {
+	tracks, err := uc.trackRepo.GetTrackById(id)
 	if err != nil {
 		return nil, err
 	}

@@ -1,3 +1,6 @@
+-- drop database if exists formula1;
+-- create database formula1;
+
 drop table if exists GrandPrix cascade;
 create table public.GrandPrix(
     gp_id serial not null primary key,
@@ -112,3 +115,5 @@ alter table TeamsDrivers add foreign key (driver_id) references public.Drivers(d
 alter table TeamsDrivers add foreign key (team_id) references public.Teams(team_id);
 alter table season_standings add foreign key (driver_id) references public.Drivers(driver_id);
 alter table season_standings add foreign key (team_id) references public.Teams(team_id);
+-- alter table TeamsDrivers add primary key (driver_id, team_id);
+

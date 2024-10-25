@@ -3,12 +3,13 @@ package http
 import (
 	"encoding/json"
 	"fmt"
-	middleware "github.com/SweetBloody/bmstu_web/backend/internal/app/middleware"
-	"github.com/gorilla/mux"
 	"net/http"
+	middleware "project/internal/app/middleware"
 	"strconv"
 
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/models"
+	"github.com/gorilla/mux"
+
+	"project/internal/pkg/models"
 )
 
 type userHandler struct {

@@ -9,7 +9,7 @@ type Track struct {
 
 type TrackUsecaseI interface {
 	GetAll() ([]*Track, error)
-	GetTeamById(id int) (*Track, error)
+	GetTrackById(id int) (*Track, error)
 	Create(track *Track) (int, error)
 	Update(id int, newTrack *Track) error
 	Delete(id int) error
@@ -17,7 +17,7 @@ type TrackUsecaseI interface {
 
 type TrackRepositoryI interface {
 	GetAll() ([]*Track, error)
-	GetTeamById(id int) (*Track, error)
+	GetTrackById(id int) (*Track, error)
 	Create(track *Track) (int, error)
 	Update(newTrack *Track) error
 	Delete(id int) error

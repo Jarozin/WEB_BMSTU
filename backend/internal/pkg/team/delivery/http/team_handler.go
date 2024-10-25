@@ -3,11 +3,12 @@ package http
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/SweetBloody/bmstu_web/backend/internal/app/middleware"
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/models"
-	"github.com/gorilla/mux"
 	"net/http"
+	"project/internal/app/middleware"
+	"project/internal/pkg/models"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type teamHandler struct {
@@ -19,7 +20,6 @@ func NewTeamHandler(m *mux.Router, teamUsecase models.TeamUsecaseI) {
 		teamUsecase: teamUsecase,
 	}
 
-	m.Handle("/api/teams", middleware.AuthMiddleware(http.HandlerFunc(handler.GetTeamsOfSeason), "admin", "user")).Queries("season", "{season}").Methods("GET")
 	m.Handle("/api/teams", middleware.AuthMiddleware(http.HandlerFunc(handler.GetAll), "admin", "user")).Methods("GET")
 	m.Handle("/api/teams/{id}", middleware.AuthMiddleware(http.HandlerFunc(handler.GetTeamById), "admin", "user")).Methods("GET")
 	//m.Handle("/api/teams_of_season/{season}", middleware.AuthMiddleware(http.HandlerFunc(handler.GetTeamsOfSeason), "admin", "user")).Methods("GET")
@@ -75,38 +75,6 @@ func (handler *teamHandler) GetTeamById(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	err = encoder.Encode(team)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-// @Summary Get all teams
-// @Tags teams
-// @Description Get all teams
-// @ID get-all-teams
-// @Accept  json
-// @Produce  json
-// @Param season query string false "season"
-// @Success 200 {object} models.Team
-// @Failure 500
-// @Router /api/teams [get]
-func (handler *teamHandler) GetTeamsOfSeason(w http.ResponseWriter, r *http.Request) {
-	var season int
-	var err error
-	res := r.URL.Query().Get("season")
-	season, err = strconv.Atoi(res)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	encoder := json.NewEncoder(w)
-	teams, err := handler.teamUsecase.GetTeamsOfSeason(season)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	err = encoder.Encode(teams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

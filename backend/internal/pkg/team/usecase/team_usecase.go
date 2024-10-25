@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/models"
+	"project/internal/pkg/models"
 )
 
 type teamUsecase struct {
@@ -29,14 +29,6 @@ func (uc *teamUsecase) GetTeamById(id int) (*models.Team, error) {
 		return nil, err
 	}
 	return teams, nil
-}
-
-func (uc *teamUsecase) GetTeamsOfSeason(season int) ([]*models.Team, error) {
-	drivers, err := uc.teamRepo.GetTeamsOfSeason(season)
-	if err != nil {
-		return nil, err
-	}
-	return drivers, nil
 }
 
 func (uc *teamUsecase) Create(team *models.Team) (int, error) {

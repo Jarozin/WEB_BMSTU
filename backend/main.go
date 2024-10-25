@@ -1,44 +1,46 @@
 package main
 
 import (
-	"example/graph"
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"project/internal/pkg/models"
 
-	authHandler "github.com/SweetBloody/bmstu_web/backend/internal/pkg/auth/delivery/http"
-	driverHandler "github.com/SweetBloody/bmstu_web/backend/internal/pkg/driver/delivery/http"
-	grandPrixHandler "github.com/SweetBloody/bmstu_web/backend/internal/pkg/grand_prix/delivery/http"
-	qualHandler "github.com/SweetBloody/bmstu_web/backend/internal/pkg/qual_result/delivery/http"
-	raceHandler "github.com/SweetBloody/bmstu_web/backend/internal/pkg/race_result/delivery/http"
-	teamHandler "github.com/SweetBloody/bmstu_web/backend/internal/pkg/team/delivery/http"
-	trackHandler "github.com/SweetBloody/bmstu_web/backend/internal/pkg/track/delivery/http"
-	userHandler "github.com/SweetBloody/bmstu_web/backend/internal/pkg/user/delivery/http"
+	"github.com/jackc/pgx/v5/pgxpool"
 
-	driverRepository "github.com/SweetBloody/bmstu_web/backend/internal/pkg/driver/repository/postgresql"
-	grandPrixRepository "github.com/SweetBloody/bmstu_web/backend/internal/pkg/grand_prix/repository/postgresql"
-	qualRepository "github.com/SweetBloody/bmstu_web/backend/internal/pkg/qual_result/repository/postgresql"
-	raceRepository "github.com/SweetBloody/bmstu_web/backend/internal/pkg/race_result/repository/postgresql"
-	teamRepository "github.com/SweetBloody/bmstu_web/backend/internal/pkg/team/repository/postgresql"
-	trackRepository "github.com/SweetBloody/bmstu_web/backend/internal/pkg/track/repository/postgresql"
-	userRepository "github.com/SweetBloody/bmstu_web/backend/internal/pkg/user/repository/postgresql"
+	authHandler "project/internal/pkg/auth/delivery/http"
+	driverHandler "project/internal/pkg/driver/delivery/http"
+	grandPrixHandler "project/internal/pkg/grand_prix/delivery/http"
+	qualHandler "project/internal/pkg/qual_result/delivery/http"
+	raceHandler "project/internal/pkg/race_result/delivery/http"
+	teamHandler "project/internal/pkg/team/delivery/http"
+	trackHandler "project/internal/pkg/track/delivery/http"
+	userHandler "project/internal/pkg/user/delivery/http"
 
-	driverUsecase "github.com/SweetBloody/bmstu_web/backend/internal/pkg/driver/usecase"
-	grandPrixUsecase "github.com/SweetBloody/bmstu_web/backend/internal/pkg/grand_prix/usecase"
-	qualUsecase "github.com/SweetBloody/bmstu_web/backend/internal/pkg/qual_result/usecase"
-	raceUsecase "github.com/SweetBloody/bmstu_web/backend/internal/pkg/race_result/usecase"
-	teamUsecase "github.com/SweetBloody/bmstu_web/backend/internal/pkg/team/usecase"
-	trackUsecase "github.com/SweetBloody/bmstu_web/backend/internal/pkg/track/usecase"
-	userUsecase "github.com/SweetBloody/bmstu_web/backend/internal/pkg/user/usecase"
+	driverRepository "project/internal/pkg/driver/repository/postgresql"
+	grandPrixRepository "project/internal/pkg/grand_prix/repository/postgresql"
+	qualRepository "project/internal/pkg/qual_result/repository/postgresql"
+	raceRepository "project/internal/pkg/race_result/repository/postgresql"
+	teamRepository "project/internal/pkg/team/repository/postgresql"
+	trackRepository "project/internal/pkg/track/repository/postgresql"
+	userRepository "project/internal/pkg/user/repository/postgresql"
 
-	_ "github.com/SweetBloody/bmstu_web/backend/docs"
+	driverUsecase "project/internal/pkg/driver/usecase"
+	grandPrixUsecase "project/internal/pkg/grand_prix/usecase"
+	qualUsecase "project/internal/pkg/qual_result/usecase"
+	raceUsecase "project/internal/pkg/race_result/usecase"
+	teamUsecase "project/internal/pkg/team/usecase"
+	trackUsecase "project/internal/pkg/track/usecase"
+	userUsecase "project/internal/pkg/user/usecase"
+
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 
-	"github.com/SweetBloody/bmstu_web/backend/internal/app/middleware"
+	"project/internal/pkg/metrics"
 
-	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/graphql/graph"
+	"project/internal/app/middleware"
+
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
@@ -53,14 +55,41 @@ import (
 // @host localhost:5259
 // @BasePath /
 func main() {
-	params := fmt.Sprintf("user=default_admin dbname=back password=12345678 host=%s port=%s sslmode=disable", os.Getenv("PG_HOST"), os.Getenv("PG_PORT"))
+	// params := fmt.Sprintf("user=postgresql dbname=postgresql password=postgresql host=%s port=%s sslmode=disable", os.Getenv("PG_HOST"), os.Getenv("PG_PORT"))
+	params := "user=postgres dbname=formula1 password=7303_486 host=localhost port=5432 sslmode=disable"
+
 	db, err := sqlx.Connect("postgres", params)
 	if err != nil {
 		log.Fatal(err)
 	}
+	conf, err := pgxpool.ParseConfig("postgres://postgresql:postgresql@" + os.Getenv("PG_HOST") + ":" + os.Getenv("PG_PORT") + "/postgresql?" + "pool_max_conns=100")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	pool, err := pgxpool.NewWithConfig(context.Background(), conf)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer pool.Close()
 	defer db.Close()
 
-	driverRepo := driverRepository.NewPsqlDriverRepository(db)
+	var driverRepo models.DriverRepositoryI
+	// if os.Getenv("MODE") == "SQLX" {
+	driverRepo = driverRepository.NewPsqlDriverRepository(db)
+	// } else {
+	// 	driverRepo = pgx.NewPsqlDriverRepositoryPGX(pool)
+
+	// }
+
+	//params := fmt.Sprintf("user=postgresql dbname=postgresql password=postgresql host=%s port=%s sslmode=disable", os.Getenv("PG_HOST"), os.Getenv("PG_PORT"))
+	//db, err := sqlx.Connect("postgres", params)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//defer db.Close()
+
+	//driverRepo := driverRepository.NewPsqlDriverRepository(db)
 	teamRepo := teamRepository.NewPsqlTeamRepository(db)
 	trackRepo := trackRepository.NewPsqlTrackRepository(db)
 	gpRepo := grandPrixRepository.NewPsqlGPRepository(db)
@@ -87,17 +116,19 @@ func main() {
 	authHandler.NewAuthHandler(m, userUcase)
 	userHandler.NewUserHandler(m, userUcase)
 
-	srv := graph.NewServer(graph.Options{})
-	//srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
-
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	mt := metrics.NewPrometheusMetrics("api")
+	err = mt.SetupMetrics()
+	if err != nil {
+		os.Exit(1)
+	}
 
 	m.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler).Methods(http.MethodGet)
-	m.Handle("/api/graphql/", playground.Handler("GraphQL playground", "/query"))
-	m.Handle("/api/v2")
+	//m.HandleFunc("/swagger/").Handler(httpSwagger.WrapHandler).Methods("GET")
 	mMiddleware := middleware.LogMiddleware(m)
+	pm := middleware.PromMetrics(mMiddleware, mt)
+
+	go metrics.ServePrometheusHTTP("0.0.0.0:9001")
 
 	fmt.Println("starting server at :8080")
-	http.ListenAndServe(":8080", handlers.CORS()(mMiddleware))
+	http.ListenAndServe(":8080", handlers.CORS()(pm))
 }

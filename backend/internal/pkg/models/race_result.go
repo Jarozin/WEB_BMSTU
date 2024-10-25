@@ -17,26 +17,26 @@ type RaceResultView struct {
 }
 
 type RaceResultUsecaseI interface {
-	GetAll() ([]*RaceResultView, error)
-	GetAllWithId() ([]*RaceResult, error)
+	//GetAll() ([]*RaceResultView, error)
+	//GetAllWithId() ([]*RaceResult, error)
 	GetRaceResultById(id int) (*RaceResultView, error)
-	GetRaceResultByIdWithId(id int) (*RaceResult, error)
+	//GetRaceResultByIdWithId(id int) (*RaceResult, error)
 	GetRaceResultsOfGP(gp_id int) ([]*RaceResultView, error)
-	GetRaceResultsOfGPWithId(gp_id int) ([]*RaceResult, error)
-	GetRaceWinnerOfGP(gp_id int) (*RaceResultView, error)
+	//GetRaceResultsOfGPWithId(gp_id int) ([]*RaceResult, error)
+	//GetRaceWinnerOfGP(gp_id int) (*RaceResultView, error)
 	Create(result *RaceResult) (int, error)
 	Update(id int, newResult *RaceResult) error
 	Delete(id int) error
 }
 
 type RaceResultRepositoryI interface {
-	GetAll() ([]*RaceResultView, error)
-	GetAllWithId() ([]*RaceResult, error)
+	//GetAll() ([]*RaceResultView, error)
+	//GetAllWithId() ([]*RaceResult, error)
 	GetRaceResultById(id int) (*RaceResultView, error)
-	GetRaceResultByIdWithId(id int) (*RaceResult, error)
+	//GetRaceResultByIdWithId(id int) (*RaceResult, error)
 	GetRaceResultsOfGP(gp_id int) ([]*RaceResultView, error)
-	GetRaceResultsOfGPWithId(gp_id int) ([]*RaceResult, error)
-	GetRaceWinnerOfGP(gp_id int) (*RaceResultView, error)
+	//GetRaceResultsOfGPWithId(gp_id int) ([]*RaceResult, error)
+	//GetRaceWinnerOfGP(gp_id int) (*RaceResultView, error)
 	Create(result *RaceResult) (int, error)
 	Update(newResult *RaceResult) error
 	Delete(id int) error

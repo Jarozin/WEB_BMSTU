@@ -3,11 +3,12 @@ package http
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/SweetBloody/bmstu_web/backend/internal/app/middleware"
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/models"
-	"github.com/gorilla/mux"
 	"net/http"
+	"project/internal/app/middleware"
+	"project/internal/pkg/models"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type grandPrixHandler struct {
@@ -26,7 +27,6 @@ func NewDriverHandler(m *mux.Router,
 		qualResultUsecase: qualResultUsecase,
 	}
 
-	m.HandleFunc("/api/grandprix", handler.GetAllBySeason).Queries("season", "{season}").Methods("GET")
 	m.HandleFunc("/api/grandprix", handler.GetAll).Methods("GET")
 	//m.HandleFunc("/api/grandprix/id/{id}", handler.GetGPById).Methods("GET")
 	m.HandleFunc("/api/grandprix/{id}", handler.GetGPById).Methods("GET")
@@ -34,9 +34,6 @@ func NewDriverHandler(m *mux.Router,
 	m.Handle("/api/grandprix", middleware.AuthMiddleware(http.HandlerFunc(handler.Create), "admin")).Methods("POST")
 	m.Handle("/api/grandprix/{id}", middleware.AuthMiddleware(http.HandlerFunc(handler.Update), "admin")).Methods("PUT")
 	m.Handle("/api/grandprix/{id}", middleware.AuthMiddleware(http.HandlerFunc(handler.Delete), "admin")).Methods("DELETE")
-	m.Handle("/api/grandprix/{id}/name", middleware.AuthMiddleware(http.HandlerFunc(handler.UpdateGPName), "admin")).Methods("PATCH")
-	m.Handle("/api/grandprix/{id}/race_results", middleware.AuthMiddleware(http.HandlerFunc(handler.GetRaceResultsOfGP), "admin", "user")).Methods("GET")
-	m.Handle("/api/grandprix/{id}/qual_results", middleware.AuthMiddleware(http.HandlerFunc(handler.GetQualResultsOfGP), "admin", "user")).Methods("GET")
 }
 
 // @Summary Get all gp
@@ -92,52 +89,6 @@ func (hander *grandPrixHandler) GetGPById(w http.ResponseWriter, r *http.Request
 		return
 	}
 }
-
-// @Summary Get all gp
-// @Tags gp
-// @Description Get all gp
-// @ID get-all-gp
-// @Accept  json
-// @Produce  json
-// @Param season query string false "season"
-// @Success 200 {object} models.GrandPrix
-// @Failure 500
-// @Router /api/grandprix [get]
-func (hander *grandPrixHandler) GetAllBySeason(w http.ResponseWriter, r *http.Request) {
-	res := r.URL.Query().Get("season")
-	season, err := strconv.Atoi(res)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	encoder := json.NewEncoder(w)
-	gp, err := hander.grandPrixUsecase.GetAllBySeason(season)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	err = encoder.Encode(gp)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-//func (hander *grandPrixHandler) GetAllByPlace(w http.ResponseWriter, r *http.Request) {
-//	vars := mux.Vars(r)
-//	place := vars["place"]
-//	encoder := json.NewEncoder(w)
-//	gp, err := hander.grandPrixUsecase.GetAllByPlace(place)
-//	if err != nil {
-//		http.Error(w, err.Error(), http.StatusInternalServerError)
-//		return
-//	}
-//	err = encoder.Encode(gp)
-//	if err != nil {
-//		http.Error(w, err.Error(), http.StatusInternalServerError)
-//		return
-//	}
-//}
 
 // @Summary Create gp
 // @Tags gp
@@ -225,42 +176,6 @@ func (handler *grandPrixHandler) Delete(w http.ResponseWriter, r *http.Request) 
 	}
 	err = handler.grandPrixUsecase.Delete(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-// @Summary Update gp name
-// @Tags gp
-// @Description Update gp name
-// @ID update-gp-name
-// @Accept  json
-// @Produce  json
-// @Param id path string true "id"
-// @Param input body string true "gp_name"
-// @Success 200
-// @Failure 400
-// @Failure 500
-// @Router /api/grandprix/{id}/name [patch]
-func (handler *grandPrixHandler) UpdateGPName(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	decoder := json.NewDecoder(r.Body)
-	req := struct {
-		Name string `json:"gp_name"`
-	}{}
-	err = decoder.Decode(&req)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	err = handler.grandPrixUsecase.UpdateGPName(id, req.Name)
-	if err != nil {
-		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

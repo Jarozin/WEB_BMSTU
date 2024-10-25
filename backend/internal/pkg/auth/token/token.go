@@ -1,9 +1,10 @@
 package token
 
 import (
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/models"
-	"github.com/golang-jwt/jwt"
+	"project/internal/pkg/models"
 	"time"
+
+	"github.com/golang-jwt/jwt"
 )
 
 var SECRET = []byte("sseeccrreett")

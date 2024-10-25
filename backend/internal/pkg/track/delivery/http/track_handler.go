@@ -3,12 +3,13 @@ package http
 import (
 	"encoding/json"
 	"fmt"
-	middleware "github.com/SweetBloody/bmstu_web/backend/internal/app/middleware"
-	"github.com/gorilla/mux"
 	"net/http"
+	middleware "project/internal/app/middleware"
 	"strconv"
 
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/models"
+	"github.com/gorilla/mux"
+
+	"project/internal/pkg/models"
 )
 
 type trackHandler struct {
@@ -68,7 +69,7 @@ func (handler *trackHandler) GetDriverById(w http.ResponseWriter, r *http.Reques
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	track, err := handler.trackUsecase.GetTeamById(id)
+	track, err := handler.trackUsecase.GetTrackById(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -2,7 +2,8 @@ package postgresql
 
 import (
 	"fmt"
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/models"
+	"project/internal/pkg/models"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -35,7 +36,7 @@ func (pgRepo *psqlTrackRepository) GetAll() ([]*models.Track, error) {
 	return tracks, nil
 }
 
-func (pgRepo *psqlTrackRepository) GetTeamById(id int) (*models.Track, error) {
+func (pgRepo *psqlTrackRepository) GetTrackById(id int) (*models.Track, error) {
 	tracks := &models.Track{}
 	err := pgRepo.db.Get(
 		tracks,
@@ -71,7 +72,7 @@ func (pgRepo *psqlTrackRepository) Update(newTrack *models.Track) error {
 		"update tracks "+
 			"set track_name = $1, "+
 			"track_country = $2, "+
-			"track_base = $3 "+
+			"track_town = $3 "+
 			"where track_id = $4",
 		newTrack.Name,
 		newTrack.Country,

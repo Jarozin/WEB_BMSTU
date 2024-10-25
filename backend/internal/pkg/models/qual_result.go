@@ -25,24 +25,24 @@ type QualResultView struct {
 }
 
 type QualResultUsecaseI interface {
-	GetAll() ([]*QualResultView, error)
-	GetAllWithId() ([]*QualResult, error)
+	//GetAll() ([]*QualResultView, error)
+	//GetAllWithId() ([]*QualResult, error)
 	GetQualResultById(id int) (*QualResultView, error)
-	GetQualResultByIdWithId(id int) (*QualResult, error)
+	//GetQualResultByIdWithId(id int) (*QualResult, error)
 	GetQualResultsOfGP(gp_id int) ([]*QualResultView, error)
-	GetQualResultsOfGPWithId(gp_id int) ([]*QualResult, error)
+	//GetQualResultsOfGPWithId(gp_id int) ([]*QualResult, error)
 	Create(result *QualResult) (int, error)
 	Update(id int, newResult *QualResult) error
 	Delete(id int) error
 }
 
 type QualResultRepositoryI interface {
-	GetAll() ([]*QualResultView, error)
-	GetAllWithId() ([]*QualResult, error)
+	//GetAll() ([]*QualResultView, error)
+	//GetAllWithId() ([]*QualResult, error)
 	GetQualResultById(id int) (*QualResultView, error)
-	GetQualResultByIdWithId(id int) (*QualResult, error)
+	//GetQualResultByIdWithId(id int) (*QualResult, error)
 	GetQualResultsOfGP(gp_id int) ([]*QualResultView, error)
-	GetQualResultsOfGPWithId(gp_id int) ([]*QualResult, error)
+	//GetQualResultsOfGPWithId(gp_id int) ([]*QualResult, error)
 	Create(result *QualResult) (int, error)
 	Update(newResult *QualResult) error
 	Delete(id int) error

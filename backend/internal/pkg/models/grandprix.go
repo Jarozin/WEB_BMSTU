@@ -13,21 +13,19 @@ type GrandPrix struct {
 type GrandPrixUsecaseI interface {
 	GetAll() ([]*GrandPrix, error)
 	GetGPById(id int) (*GrandPrix, error)
-	GetAllBySeason(season int) ([]*GrandPrix, error)
-	GetAllByPlace(place string) ([]*GrandPrix, error)
+	//GetAllBySeason(season int) ([]*GrandPrix, error)
+	//GetAllByPlace(place string) ([]*GrandPrix, error)
 	Create(grandPrix *GrandPrix) (int, error)
 	Update(id int, newGrandPrix *GrandPrix) error
 	Delete(id int) error
-	UpdateGPName(id int, gpName string) error
 }
 
 type GrandPrixRepositoryI interface {
 	GetAll() ([]*GrandPrix, error)
 	GetGPById(id int) (*GrandPrix, error)
-	GetAllBySeason(season int) ([]*GrandPrix, error)
-	GetAllByPlace(place string) ([]*GrandPrix, error)
+	//GetAllBySeason(season int) ([]*GrandPrix, error)
+	//GetAllByPlace(place string) ([]*GrandPrix, error)
 	Create(grandPrix *GrandPrix) (int, error)
 	Update(newGrandPrix *GrandPrix) error
 	Delete(id int) error
-	UpdateGPName(id int, newName string) error
 }

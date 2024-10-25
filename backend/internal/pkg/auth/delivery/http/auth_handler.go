@@ -2,11 +2,12 @@ package http
 
 import (
 	"encoding/json"
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/auth"
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/auth/token"
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/models"
-	"github.com/gorilla/mux"
 	"net/http"
+	"project/internal/pkg/auth"
+	"project/internal/pkg/auth/token"
+	"project/internal/pkg/models"
+
+	"github.com/gorilla/mux"
 )
 
 type authHandler struct {
@@ -17,9 +18,9 @@ func NewAuthHandler(m *mux.Router, userUsecase models.UserUsecaseI) {
 	handler := &authHandler{
 		userUsecase: userUsecase,
 	}
-	m.HandleFunc("/api/login", handler.LogIn).Methods("POST")
-	m.HandleFunc("/api/register", handler.Register).Methods("POST")
-	m.HandleFunc("/api/logout", handler.LogOut).Methods("DELETE")
+	m.HandleFunc("/auth/login", handler.LogIn).Methods("POST")
+	m.HandleFunc("/auth/register", handler.Register).Methods("POST")
+	m.HandleFunc("/auth/logout", handler.LogOut).Methods("DELETE")
 }
 
 // @Summary Log in

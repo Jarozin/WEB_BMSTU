@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/models"
+	"project/internal/pkg/models"
 )
 
 type qualResultUsecase struct {
@@ -14,24 +14,6 @@ func NewQualResultUsecase(qualResultRepo models.QualResultRepositoryI) models.Qu
 	}
 }
 
-func (uc *qualResultUsecase) GetAll() ([]*models.QualResultView, error) {
-	result, err := uc.qualResultRepo.GetAll()
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-func (uc *qualResultUsecase) GetAllWithId() ([]*models.QualResult, error) {
-	result, err := uc.qualResultRepo.GetAllWithId()
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
 func (uc *qualResultUsecase) GetQualResultById(id int) (*models.QualResultView, error) {
 	result, err := uc.qualResultRepo.GetQualResultById(id)
 	if err != nil {
@@ -40,24 +22,8 @@ func (uc *qualResultUsecase) GetQualResultById(id int) (*models.QualResultView, 
 	return result, nil
 }
 
-func (uc *qualResultUsecase) GetQualResultByIdWithId(id int) (*models.QualResult, error) {
-	result, err := uc.qualResultRepo.GetQualResultByIdWithId(id)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
 func (uc *qualResultUsecase) GetQualResultsOfGP(gp_id int) ([]*models.QualResultView, error) {
 	qual_results, err := uc.qualResultRepo.GetQualResultsOfGP(gp_id)
-	if err != nil {
-		return nil, err
-	}
-	return qual_results, nil
-}
-
-func (uc *qualResultUsecase) GetQualResultsOfGPWithId(gp_id int) ([]*models.QualResult, error) {
-	qual_results, err := uc.qualResultRepo.GetQualResultsOfGPWithId(gp_id)
 	if err != nil {
 		return nil, err
 	}

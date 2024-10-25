@@ -24,21 +24,15 @@ type DriversTeams struct {
 type DriverUsecaseI interface {
 	GetAll() ([]*Driver, error)
 	GetDriverById(id int) (*Driver, error)
-	GetDriversOfSeason(season int) ([]*Driver, error)
-	GetDriversStanding() ([]*Standings, error)
 	Create(driver *Driver) (int, error)
 	Update(id int, newDriver *Driver) error
 	Delete(id int) error
-	LinkDriverTeam(new *DriversTeams) error
 }
 
 type DriverRepositoryI interface {
 	GetAll() ([]*Driver, error)
 	GetDriverById(id int) (*Driver, error)
-	GetDriversOfSeason(season int) ([]*Driver, error)
-	GetDriversStanding() ([]*Standings, error)
 	Create(driver *Driver) (int, error)
 	Update(newDriver *Driver) error
 	Delete(id int) error
-	LinkDriverTeam(new *DriversTeams) error
 }

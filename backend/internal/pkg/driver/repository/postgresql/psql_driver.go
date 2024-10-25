@@ -1,8 +1,8 @@
 package postgresql
 
 import (
-	"fmt"
-	"github.com/SweetBloody/bmstu_web/backend/internal/pkg/models"
+	"project/internal/pkg/models"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -22,7 +22,7 @@ func (pgRepo *psqlDriverRepository) GetAll() ([]*models.Driver, error) {
 		"select driver_id, driver_name, driver_country, driver_birth_date " +
 			"from drivers")
 	if err != nil {
-		return nil, fmt.Errorf("error from db, error: %w", err)
+		return nil, err
 	}
 	for rows.Next() {
 		driver := &models.Driver{}
@@ -44,7 +44,7 @@ func (pgRepo *psqlDriverRepository) GetDriverById(id int) (*models.Driver, error
 			"where driver_id = $1",
 		id)
 	if err != nil {
-		return nil, fmt.Errorf("error from db, error: %w", err)
+		return nil, err
 	}
 	return driver, nil
 }
@@ -58,7 +58,7 @@ func (pgRepo *psqlDriverRepository) GetDriversOfSeason(season int) ([]*models.Dr
 			"where team_driver_season = $1",
 		season)
 	if err != nil {
-		return nil, fmt.Errorf("error from db, error: %w", err)
+		return nil, err
 	}
 	for rows.Next() {
 		driver := &models.Driver{}
@@ -80,7 +80,7 @@ func (pgRepo *psqlDriverRepository) GetDriversStanding() ([]*models.Standings, e
 			"join teams t on s.team_id = t.team_id " +
 			"order by score desc")
 	if err != nil {
-		return nil, fmt.Errorf("error from db, error: %w", err)
+		return nil, err
 	}
 	for rows.Next() {
 		temp := &models.Standings{}
@@ -104,7 +104,7 @@ func (pgRepo *psqlDriverRepository) Create(driver *models.Driver) (int, error) {
 		driver.BirthDate,
 	).Scan(&id)
 	if err != nil {
-		return 0, fmt.Errorf("error from db, error: %w", err)
+		return 0, err
 	}
 	return id, nil
 }
@@ -132,7 +132,7 @@ func (pgRepo *psqlDriverRepository) Delete(id int) error {
 			"where driver_id = $1",
 		id)
 	if err != nil {
-		return fmt.Errorf("error from db, error: %w", err)
+		return err
 	}
 	return nil
 }
@@ -146,7 +146,7 @@ func (pgRepo *psqlDriverRepository) LinkDriverTeam(new *models.DriversTeams) err
 		new.Season,
 	)
 	if err != nil {
-		return fmt.Errorf("error from db, error: %w", err)
+		return err
 	}
 	return nil
 }
