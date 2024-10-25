@@ -107,6 +107,12 @@ create table public.RaceResultsTmp(
     gp_id int not null
 );
 
+create table public.gp_users(
+    gp_id int not null,
+    user_id int not null,
+    primary key(gp_id, user_id)
+);
+
 set datestyle to 'dmy';
 alter table GrandPrix add foreign key (gp_track_id) references public.Tracks(track_id);
 alter table QualificationResults add foreign key (gp_id) references public.GrandPrix(gp_id);
@@ -115,5 +121,6 @@ alter table TeamsDrivers add foreign key (driver_id) references public.Drivers(d
 alter table TeamsDrivers add foreign key (team_id) references public.Teams(team_id);
 alter table season_standings add foreign key (driver_id) references public.Drivers(driver_id);
 alter table season_standings add foreign key (team_id) references public.Teams(team_id);
+alter table gp_users add foreign key (gp_id) references public.GrandPrix(gp_id);
+alter table gp_users add foreign key (user_id) references public.Users(user_id);
 -- alter table TeamsDrivers add primary key (driver_id, team_id);
-

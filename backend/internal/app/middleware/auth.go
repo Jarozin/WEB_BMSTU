@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	tokenPkg "project/internal/pkg/auth/token"
@@ -45,6 +46,8 @@ func AuthMiddleware(next http.Handler, roles ...string) http.Handler {
 				return
 			}
 		}
-		next.ServeHTTP(w, r)
+
+		ctx := context.WithValue(r.Context(), "userClaim", claims)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

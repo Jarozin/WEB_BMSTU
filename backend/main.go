@@ -35,8 +35,6 @@ import (
 	trackUsecase "project/internal/pkg/track/usecase"
 	userUsecase "project/internal/pkg/user/usecase"
 
-	httpSwagger "github.com/swaggo/http-swagger/v2"
-
 	"project/internal/pkg/metrics"
 
 	"project/internal/app/middleware"
@@ -122,7 +120,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	m.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler).Methods(http.MethodGet)
+	// m.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler).Methods(http.MethodGet)
 	//m.HandleFunc("/swagger/").Handler(httpSwagger.WrapHandler).Methods("GET")
 	mMiddleware := middleware.LogMiddleware(m)
 	pm := middleware.PromMetrics(mMiddleware, mt)

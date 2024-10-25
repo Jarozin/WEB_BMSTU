@@ -2,6 +2,9 @@ openapi: 3.0.3
 info:
   title: FormulOne
   version: 1.0.0
+servers:
+- url: http://localhost:8080/api
+  description: testing server
 tags:
   - name: auth
     description: Authorisation
@@ -947,7 +950,7 @@ paths:
         '500':
           description: Status internal server error
   /api/grandprix/{id}/featured:
-      put:
+      post:
         tags:
           - featured
         summary: Add feature tag to grand prix
