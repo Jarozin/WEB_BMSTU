@@ -70,6 +70,10 @@ func (handler *teamHandler) GetTeamById(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	team, err := handler.teamUsecase.GetTeamById(id)
+	if err == nil && team == nil {
+		http.Error(w, "id not found", http.StatusNotFound)
+	}
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

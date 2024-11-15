@@ -52,6 +52,10 @@ func (handler *raceResultHandler) GetRaceResultById(w http.ResponseWriter, r *ht
 	}
 	encoder := json.NewEncoder(w)
 	result, err := handler.raceResultUsecase.GetRaceResultById(id)
+	if err == nil && result == nil {
+		http.Error(w, "id not found", http.StatusNotFound)
+	}
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

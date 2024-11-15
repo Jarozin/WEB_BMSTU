@@ -12,6 +12,7 @@ import (
 
 	authHandler "project/internal/pkg/auth/delivery/http"
 	driverHandler "project/internal/pkg/driver/delivery/http"
+	featuredHandler "project/internal/pkg/featured/delivery/http"
 	grandPrixHandler "project/internal/pkg/grand_prix/delivery/http"
 	qualHandler "project/internal/pkg/qual_result/delivery/http"
 	raceHandler "project/internal/pkg/race_result/delivery/http"
@@ -20,6 +21,7 @@ import (
 	userHandler "project/internal/pkg/user/delivery/http"
 
 	driverRepository "project/internal/pkg/driver/repository/postgresql"
+	featuredRepository "project/internal/pkg/featured/postgresql"
 	grandPrixRepository "project/internal/pkg/grand_prix/repository/postgresql"
 	qualRepository "project/internal/pkg/qual_result/repository/postgresql"
 	raceRepository "project/internal/pkg/race_result/repository/postgresql"
@@ -28,14 +30,13 @@ import (
 	userRepository "project/internal/pkg/user/repository/postgresql"
 
 	driverUsecase "project/internal/pkg/driver/usecase"
+	featuredUsecase "project/internal/pkg/featured/usecase"
 	grandPrixUsecase "project/internal/pkg/grand_prix/usecase"
 	qualUsecase "project/internal/pkg/qual_result/usecase"
 	raceUsecase "project/internal/pkg/race_result/usecase"
 	teamUsecase "project/internal/pkg/team/usecase"
 	trackUsecase "project/internal/pkg/track/usecase"
 	userUsecase "project/internal/pkg/user/usecase"
-
-	"project/internal/pkg/metrics"
 
 	"project/internal/app/middleware"
 
@@ -94,6 +95,7 @@ func main() {
 	raceRepo := raceRepository.NewPsqlRaceResultRepository(db)
 	qualRepo := qualRepository.NewPsqlQualResultRepository(db)
 	userRepo := userRepository.NewPsqlUserRepository(db)
+	featuredRepo := featuredRepository.NewPsqlGPRepository(db)
 
 	driverUcase := driverUsecase.NewDriverUsecase(driverRepo)
 	teamUcase := teamUsecase.NewTeamUsecase(teamRepo)
@@ -102,6 +104,7 @@ func main() {
 	raceUcase := raceUsecase.NewRaceResultUsecase(raceRepo)
 	qualUcase := qualUsecase.NewQualResultUsecase(qualRepo)
 	userUcase := userUsecase.NewUserUsecase(userRepo)
+	featuredUcase := featuredUsecase.NewFeaturedUsecase(featuredRepo)
 
 	m := mux.NewRouter()
 
@@ -113,9 +116,10 @@ func main() {
 	qualHandler.NewQualResultHandler(m, qualUcase)
 	authHandler.NewAuthHandler(m, userUcase)
 	userHandler.NewUserHandler(m, userUcase)
+	featuredHandler.NewFeaturedHandler(m, featuredUcase)
 
-	mt := metrics.NewPrometheusMetrics("api")
-	err = mt.SetupMetrics()
+	// mt := metrics.NewPrometheusMetrics("api")
+	// err = mt.SetupMetrics()
 	if err != nil {
 		os.Exit(1)
 	}
@@ -123,10 +127,10 @@ func main() {
 	// m.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler).Methods(http.MethodGet)
 	//m.HandleFunc("/swagger/").Handler(httpSwagger.WrapHandler).Methods("GET")
 	mMiddleware := middleware.LogMiddleware(m)
-	pm := middleware.PromMetrics(mMiddleware, mt)
+	// pm := middleware.PromMetrics(mMiddleware, mt)
 
-	go metrics.ServePrometheusHTTP("0.0.0.0:9001")
+	// go metrics.ServePrometheusHTTP("0.0.0.0:9001")
 
 	fmt.Println("starting server at :8080")
-	http.ListenAndServe(":8080", handlers.CORS()(pm))
+	http.ListenAndServe(":8080", handlers.CORS()(mMiddleware))
 }

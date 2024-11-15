@@ -55,7 +55,7 @@ func (pgRepo *psqlGPRepository) Create(featured *models.Featured) (int, error) {
 
 func (pgRepo *psqlGPRepository) Delete(feature *models.Featured) error {
 	_, err := pgRepo.db.Exec(
-		"delete from grandprix "+
+		"delete from gp_users "+
 			"where gp_id = $1 and user_id = $2",
 		feature.GpID, feature.UserID)
 	if err != nil {

@@ -70,6 +70,10 @@ func (handler *trackHandler) GetDriverById(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	track, err := handler.trackUsecase.GetTrackById(id)
+	if err == nil && track == nil {
+		http.Error(w, "id not found", http.StatusNotFound)
+	}
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

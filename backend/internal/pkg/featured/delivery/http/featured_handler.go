@@ -21,9 +21,9 @@ func NewFeaturedHandler(m *mux.Router,
 		featuredUsecase: featuredUsecase,
 	}
 
-	m.HandleFunc("/api/grandprix/featured", handler.GetAll).Methods("GET")
-	m.Handle("/api/grandprix/{id}/featured", middleware.AuthMiddleware(http.HandlerFunc(handler.Create), "user", "admin")).Methods("POST")
-	m.Handle("/api/grandprix/{id}/featured", middleware.AuthMiddleware(http.HandlerFunc(handler.Delete), "user", "admin")).Methods("DELETE")
+	m.Handle("/api/featured", middleware.AuthMiddleware(http.HandlerFunc(handler.GetAll), "user", "admin")).Methods("GET")
+	m.Handle("/api/{id}/featured", middleware.AuthMiddleware(http.HandlerFunc(handler.Create), "user", "admin")).Methods("POST")
+	m.Handle("/api/{id}/featured", middleware.AuthMiddleware(http.HandlerFunc(handler.Delete), "user", "admin")).Methods("DELETE")
 }
 
 // @Summary Get all gp
@@ -37,10 +37,10 @@ func NewFeaturedHandler(m *mux.Router,
 // @Router /api/grandprix [get]
 func (handler *featuredHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	userClaim := r.Context().Value("userClaim")
-	user_id := userClaim.(jwt.MapClaims)["user_id"].(int64)
+	user_id := userClaim.(jwt.MapClaims)["user_id"]
 
 	encoder := json.NewEncoder(w)
-	gp, err := handler.featuredUsecase.GetAll(user_id)
+	gp, err := handler.featuredUsecase.GetAll(int64(user_id.(float64)))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -65,7 +65,8 @@ func (handler *featuredHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 // @Router /api/grandprix [post]
 func (handler *featuredHandler) Create(w http.ResponseWriter, r *http.Request) {
 	userClaim := r.Context().Value("userClaim")
-	user_id := userClaim.(jwt.MapClaims)["user_id"].(int64)
+	user_id := userClaim.(jwt.MapClaims)["user_id"]
+
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -75,7 +76,7 @@ func (handler *featuredHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	feature := models.Featured{
 		GpID:   int64(id),
-		UserID: user_id,
+		UserID: int64(user_id.(float64)),
 	}
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -108,7 +109,7 @@ func (handler *featuredHandler) Create(w http.ResponseWriter, r *http.Request) {
 // @Router /api/grandprix/{id} [delete]
 func (handler *featuredHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	userClaim := r.Context().Value("userClaim")
-	user_id := userClaim.(jwt.MapClaims)["user_id"].(int64)
+	user_id := userClaim.(jwt.MapClaims)["user_id"]
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -118,7 +119,7 @@ func (handler *featuredHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	feature := models.Featured{
 		GpID:   int64(id),
-		UserID: user_id,
+		UserID: int64(user_id.(float64)),
 	}
 	err = handler.featuredUsecase.Delete(&feature)
 	if err != nil {

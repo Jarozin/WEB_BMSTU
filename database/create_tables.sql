@@ -124,3 +124,4 @@ alter table season_standings add foreign key (team_id) references public.Teams(t
 alter table gp_users add foreign key (gp_id) references public.GrandPrix(gp_id);
 alter table gp_users add foreign key (user_id) references public.Users(user_id);
 -- alter table TeamsDrivers add primary key (driver_id, team_id);
+alter table users add unique(login);

@@ -28,9 +28,8 @@ func NewDriverHandler(m *mux.Router,
 	}
 
 	m.HandleFunc("/api/grandprix", handler.GetAll).Methods("GET")
-	//m.HandleFunc("/api/grandprix/id/{id}", handler.GetGPById).Methods("GET")
 	m.HandleFunc("/api/grandprix/{id}", handler.GetGPById).Methods("GET")
-	//m.HandleFunc("/api/grandprix/place/{place}", handler.GetAllByPlace).Methods("GET")
+	m.Handle("/api/grandprix/{id}/name", middleware.AuthMiddleware(http.HandlerFunc(handler.PatchName), "admin")).Methods("Patch")
 	m.Handle("/api/grandprix", middleware.AuthMiddleware(http.HandlerFunc(handler.Create), "admin")).Methods("POST")
 	m.Handle("/api/grandprix/{id}", middleware.AuthMiddleware(http.HandlerFunc(handler.Update), "admin")).Methods("PUT")
 	m.Handle("/api/grandprix/{id}", middleware.AuthMiddleware(http.HandlerFunc(handler.Delete), "admin")).Methods("DELETE")
@@ -79,6 +78,10 @@ func (hander *grandPrixHandler) GetGPById(w http.ResponseWriter, r *http.Request
 	}
 	encoder := json.NewEncoder(w)
 	gp, err := hander.grandPrixUsecase.GetGPById(id)
+	if err == nil && gp == nil {
+		http.Error(w, "id not found", http.StatusNotFound)
+	}
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -236,6 +239,28 @@ func (handler *grandPrixHandler) GetQualResultsOfGP(w http.ResponseWriter, r *ht
 	encoder := json.NewEncoder(w)
 	err = encoder.Encode(qualResults)
 	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (handler *grandPrixHandler) PatchName(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	decoder := json.NewDecoder(r.Body)
+	gp := new(models.GrandPrix)
+	err = decoder.Decode(gp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	err = handler.grandPrixUsecase.UpdateGPName(id, gp.Name)
+	if err != nil {
+		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

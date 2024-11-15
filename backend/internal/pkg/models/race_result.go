@@ -17,7 +17,7 @@ type RaceResultView struct {
 }
 
 type RaceResultUsecaseI interface {
-	//GetAll() ([]*RaceResultView, error)
+	// GetAll() ([]*RaceResultView, error)
 	//GetAllWithId() ([]*RaceResult, error)
 	GetRaceResultById(id int) (*RaceResultView, error)
 	//GetRaceResultByIdWithId(id int) (*RaceResult, error)
@@ -30,7 +30,7 @@ type RaceResultUsecaseI interface {
 }
 
 type RaceResultRepositoryI interface {
-	//GetAll() ([]*RaceResultView, error)
+	// GetAll() ([]*RaceResultView, error)
 	//GetAllWithId() ([]*RaceResult, error)
 	GetRaceResultById(id int) (*RaceResultView, error)
 	//GetRaceResultByIdWithId(id int) (*RaceResult, error)

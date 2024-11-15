@@ -3,7 +3,7 @@ info:
   title: FormulOne
   version: 1.0.0
 servers:
-- url: http://localhost:8080/api
+- url: http://localhost:8080
   description: testing server
 tags:
   - name: auth
@@ -21,7 +21,7 @@ tags:
   - name: tracks
     description: Track operations
 paths:
-  /auth/login:
+  /api/auth/login:
     post:
       tags:
         - auth
@@ -44,7 +44,7 @@ paths:
 
         '500':
           description: Status internal server error
-  /auth/register:
+  /api/auth/register:
     post:
       tags:
         - auth
@@ -68,7 +68,7 @@ paths:
           description: Not enough rights
         '500':
           description: Status internal server error
-  /auth/logout:
+  /api/auth/logout:
     delete:
       tags:
         - auth

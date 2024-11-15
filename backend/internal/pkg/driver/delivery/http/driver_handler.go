@@ -25,7 +25,8 @@ func NewDriverHandler(m *mux.Router, driverUsecase models.DriverUsecaseI, raceRe
 	//m.Handle("/api/drivers", middleware.AuthMiddleware(http.HandlerFunc(handler.GetAll), "admin", "user")).Methods("GET")
 	m.HandleFunc("/api/drivers", handler.GetAll).Methods("GET")
 	m.Handle("/api/drivers", middleware.AuthMiddleware(http.HandlerFunc(handler.Create), "admin")).Methods("POST")
-	m.Handle("/api/drivers/{id}", middleware.AuthMiddleware(http.HandlerFunc(handler.GetDriverById), "admin", "user")).Methods("GET")
+	m.HandleFunc("/api/drivers/{id}", handler.GetDriverById).Methods("GET")
+
 	m.Handle("/api/drivers/{id}", middleware.AuthMiddleware(http.HandlerFunc(handler.Update), "admin")).Methods("PUT")
 	m.Handle("/api/drivers/{id}", middleware.AuthMiddleware(http.HandlerFunc(handler.Delete), "admin")).Methods("DELETE")
 }
@@ -73,6 +74,10 @@ func (handler *driverHandler) GetDriverById(w http.ResponseWriter, r *http.Reque
 	}
 	encoder := json.NewEncoder(w)
 	driver, err := handler.driverUsecase.GetDriverById(id)
+	if err == nil && driver == nil {
+		http.Error(w, "id not found", http.StatusNotFound)
+	}
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

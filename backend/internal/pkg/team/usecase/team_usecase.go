@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"database/sql"
 	"project/internal/pkg/models"
 )
 
@@ -25,6 +26,11 @@ func (uc *teamUsecase) GetAll() ([]*models.Team, error) {
 
 func (uc *teamUsecase) GetTeamById(id int) (*models.Team, error) {
 	teams, err := uc.teamRepo.GetTeamById(id)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+
 	if err != nil {
 		return nil, err
 	}

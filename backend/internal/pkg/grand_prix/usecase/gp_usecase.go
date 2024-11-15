@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"database/sql"
 	"project/internal/pkg/models"
 )
 
@@ -24,6 +25,11 @@ func (uc *grandPrixUsecase) GetAll() ([]*models.GrandPrix, error) {
 
 func (uc *grandPrixUsecase) GetGPById(id int) (*models.GrandPrix, error) {
 	gp, err := uc.grandPrixRepo.GetGPById(id)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -41,6 +47,7 @@ func (uc *grandPrixUsecase) Create(grandPrix *models.GrandPrix) (int, error) {
 func (uc *grandPrixUsecase) Update(id int, newGrandPrix *models.GrandPrix) error {
 	newGrandPrix.ID = id
 	err := uc.grandPrixRepo.Update(newGrandPrix)
+
 	if err != nil {
 		return err
 	}
@@ -49,6 +56,14 @@ func (uc *grandPrixUsecase) Update(id int, newGrandPrix *models.GrandPrix) error
 
 func (uc *grandPrixUsecase) Delete(id int) error {
 	err := uc.grandPrixRepo.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (uc *grandPrixUsecase) UpdateGPName(id int, name string) error {
+	err := uc.grandPrixRepo.UpdateGPName(id, name)
 	if err != nil {
 		return err
 	}

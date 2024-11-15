@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"database/sql"
 	"project/internal/pkg/models"
 )
 
@@ -14,8 +15,21 @@ func NewRaceResultUsecase(raceResultRepo models.RaceResultRepositoryI) models.Ra
 	}
 }
 
+// func (uc *raceResultUsecase) GetAll(id int) (*models.RaceResultView, error) {
+// 	result, err := uc.raceResultRepo.GetAll()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return result, nil
+// }
+
 func (uc *raceResultUsecase) GetRaceResultById(id int) (*models.RaceResultView, error) {
 	result, err := uc.raceResultRepo.GetRaceResultById(id)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+
 	if err != nil {
 		return nil, err
 	}

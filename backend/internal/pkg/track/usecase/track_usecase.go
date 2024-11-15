@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"database/sql"
 	"project/internal/pkg/models"
 )
 
@@ -25,6 +26,11 @@ func (uc *trackUsecase) GetAll() ([]*models.Track, error) {
 
 func (uc *trackUsecase) GetTrackById(id int) (*models.Track, error) {
 	tracks, err := uc.trackRepo.GetTrackById(id)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+
 	if err != nil {
 		return nil, err
 	}
